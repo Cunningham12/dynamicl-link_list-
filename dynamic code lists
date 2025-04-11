@@ -1,0 +1,165 @@
+#include <iostream>
+#include <cassert>
+
+// ===============================
+// Dynamic Memory Linked List
+// ===============================
+template <typename T>
+class DynamicLinkedList {
+public:
+    DynamicLinkedList() : head(nullptr) {}
+
+    ~DynamicLinkedList() {
+        while (head) {
+            Node* to_delete = head;
+            head = head->next;
+            delete to_delete;
+        }
+    }
+
+    void append(T value) {
+        Node* node = new Node{value, nullptr};
+        if (!head) {
+            head = node;
+            return;
+        }
+        Node* current = head;
+        while (current->next) current = current->next;
+        current->next = node;
+    }
+
+    void insert_at(int position, T value) {
+        Node* node = new Node{value, nullptr};
+        if (position == 0) {
+            node->next = head;
+            head = node;
+            return;
+        }
+        Node* current = head;
+        for (int i = 0; i < position - 1 && current; ++i) current = current->next;
+        if (!current) throw std::out_of_range("Invalid position");
+        node->next = current->next;
+        current->next = node;
+    }
+
+    void display() const {
+        Node* current = head;
+        while (current) {
+            std::cout << current->data << " -> ";
+            current = current->next;
+        }
+        std::cout << "NULL\n";
+    }
+
+    T get_value(int index) const {
+        Node* current = head;
+        for (int i = 0; i < index && current; ++i) current = current->next;
+        if (!current) throw std::out_of_range("Index not found");
+        return current->data;
+    }
+
+    bool contains(T value) const {
+        Node* current = head;
+        while (current) {
+            if (current->data == value) return true;
+            current = current->next;
+        }
+        return false;
+    }
+
+    bool replace_value(T old_val, T new_val) {
+        Node* current = head;
+        while (current) {
+            if (current->data == old_val) {
+                current->data = new_val;
+                return true;
+            }
+            current = current->next;
+        }
+        return false;
+    }
+
+    bool set_at_index(int index, T value) {
+        Node* current = head;
+        for (int i = 0; i < index && current; ++i) current = current->next;
+        if (!current) return false;
+        current->data = value;
+        return true;
+    }
+
+    bool remove_by_value(T value) {
+        if (!head) return false;
+        if (head->data == value) {
+            Node* temp = head;
+            head = head->next;
+            delete temp;
+            return true;
+        }
+        Node* current = head;
+        while (current->next && current->next->data != value) current = current->next;
+        if (!current->next) return false;
+        Node* temp = current->next;
+        current->next = current->next->next;
+        delete temp;
+        return true;
+    }
+
+    bool remove_at(int index) {
+        if (!head) return false;
+        if (index == 0) {
+            Node* temp = head;
+            head = head->next;
+            delete temp;
+            return true;
+        }
+        Node* current = head;
+        for (int i = 0; i < index - 1 && current->next; ++i) current = current->next;
+        if (!current->next) return false;
+        Node* temp = current->next;
+        current->next = current->next->next;
+        delete temp;
+        return true;
+    }
+
+private:
+    struct Node {
+        T data;
+        Node* next;
+    };
+    Node* head;
+};
+
+// ======================
+// Simple Test Cases
+// ======================
+int main() {
+    DynamicLinkedList<int> list;
+
+    list.append(1);
+    list.append(3);
+    list.append(5);
+    list.display(); // 1 -> 3 -> 5 -> NULL
+
+    list.insert_at(1, 2);
+    list.display(); // 1 -> 2 -> 3 -> 5 -> NULL
+
+    assert(list.get_value(0) == 1);
+    assert(list.get_value(2) == 3);
+
+    assert(list.contains(5));
+
+    assert(list.replace_value(3, 8));
+    list.display(); // 1 -> 2 -> 8 -> 5 -> NULL
+
+    assert(list.set_at_index(3, 9));
+    list.display(); // 1 -> 2 -> 8 -> 9 -> NULL
+
+    assert(list.remove_by_value(2));
+    list.display(); // 1 -> 8 -> 9 -> NULL
+
+    assert(list.remove_at(1));
+    list.display(); // 1 -> 9 -> NULL
+
+    std::cout << "\nAll operations passed successfully!\n";
+    return 0;
+}
