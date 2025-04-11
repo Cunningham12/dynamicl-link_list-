@@ -1,14 +1,25 @@
 #include <iostream>
 #include <cassert>
 
-// ===============================
-// Dynamic Memory Linked List
-// ===============================
+/**
+ * @brief A dynamic singly linked list class using templates.
+ * 
+ * This class supports operations like append, insert, delete,
+ * search, update, and display.
+ * 
+ * @tparam T Type of the data stored in the list.
+ */
 template <typename T>
 class DynamicLinkedList {
 public:
+    /**
+     * @brief Constructor to initialize an empty list.
+     */
     DynamicLinkedList() : head(nullptr) {}
 
+    /**
+     * @brief Destructor to delete all nodes in the list.
+     */
     ~DynamicLinkedList() {
         while (head) {
             Node* to_delete = head;
@@ -17,6 +28,11 @@ public:
         }
     }
 
+    /**
+     * @brief Adds a new value to the end of the list.
+     * 
+     * @param value The value to be added.
+     */
     void append(T value) {
         Node* node = new Node{value, nullptr};
         if (!head) {
@@ -28,6 +44,13 @@ public:
         current->next = node;
     }
 
+    /**
+     * @brief Inserts a value at a specific position in the list.
+     * 
+     * @param position The index to insert at.
+     * @param value The value to insert.
+     * @throws std::out_of_range if the position is invalid.
+     */
     void insert_at(int position, T value) {
         Node* node = new Node{value, nullptr};
         if (position == 0) {
@@ -42,6 +65,9 @@ public:
         current->next = node;
     }
 
+    /**
+     * @brief Prints all elements in the list.
+     */
     void display() const {
         Node* current = head;
         while (current) {
@@ -51,6 +77,13 @@ public:
         std::cout << "NULL\n";
     }
 
+    /**
+     * @brief Gets the value at a specific index.
+     * 
+     * @param index The index to access.
+     * @return T The value at that index.
+     * @throws std::out_of_range if the index is invalid.
+     */
     T get_value(int index) const {
         Node* current = head;
         for (int i = 0; i < index && current; ++i) current = current->next;
@@ -58,6 +91,13 @@ public:
         return current->data;
     }
 
+    /**
+     * @brief Checks if the list contains a given value.
+     * 
+     * @param value The value to look for.
+     * @return true If found.
+     * @return false If not found.
+     */
     bool contains(T value) const {
         Node* current = head;
         while (current) {
@@ -67,6 +107,14 @@ public:
         return false;
     }
 
+    /**
+     * @brief Replaces the first matching value with a new value.
+     * 
+     * @param old_val The value to replace.
+     * @param new_val The new value to set.
+     * @return true If replaced.
+     * @return false If value not found.
+     */
     bool replace_value(T old_val, T new_val) {
         Node* current = head;
         while (current) {
@@ -79,6 +127,14 @@ public:
         return false;
     }
 
+    /**
+     * @brief Sets a new value at a given index.
+     * 
+     * @param index The index to update.
+     * @param value The new value to set.
+     * @return true If index is valid.
+     * @return false If index is invalid.
+     */
     bool set_at_index(int index, T value) {
         Node* current = head;
         for (int i = 0; i < index && current; ++i) current = current->next;
@@ -87,6 +143,13 @@ public:
         return true;
     }
 
+    /**
+     * @brief Removes the first node that has the given value.
+     * 
+     * @param value The value to remove.
+     * @return true If removed successfully.
+     * @return false If value not found.
+     */
     bool remove_by_value(T value) {
         if (!head) return false;
         if (head->data == value) {
@@ -104,6 +167,13 @@ public:
         return true;
     }
 
+    /**
+     * @brief Removes the node at a specific index.
+     * 
+     * @param index The index to remove.
+     * @return true If removed.
+     * @return false If index is invalid.
+     */
     bool remove_at(int index) {
         if (!head) return false;
         if (index == 0) {
@@ -122,16 +192,23 @@ public:
     }
 
 private:
+    /**
+     * @brief Internal node structure for the linked list.
+     */
     struct Node {
-        T data;
-        Node* next;
+        T data;        ///< Data stored in the node.
+        Node* next;    ///< Pointer to the next node.
     };
-    Node* head;
+    Node* head;        ///< Pointer to the first node in the list.
 };
 
 // ======================
 // Simple Test Cases
 // ======================
+
+/**
+ * @brief Entry point to test the linked list functions.
+ */
 int main() {
     DynamicLinkedList<int> list;
 
